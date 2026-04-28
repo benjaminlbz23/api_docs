@@ -46,7 +46,7 @@
     <section class="doc-section" id="overview">
       <div class="section-eyebrow">Clearing API · 1.1</div>
       <h2>Owner Data</h2>
-      <p>Retrieve financial data for a specific owner across a given date range. The response includes transactions, bookings (with line-level financials), and resolution payouts.</p>
+      <p>Retrieve all financial data for a specific owner across a given date range: reservations with line-level financials, expenses and transactions marked "to owner" and resolution payouts.</p>
 
       <div class="endpoint-row">
         <span class="method-badge">POST</span>
@@ -75,7 +75,7 @@
             <tr>
               <td><span class="f-name">owner-id</span></td>
               <td><span class="f-type">string</span></td>
-              <td class="f-desc">Unique owner identifier. <strong>Found by opening owner details in Clearing</strong> — copy the ID from the URL or detail panel.</td>
+              <td class="f-desc">Unique owner identifier. <strong>Found by opening owner details in Clearing</strong> — copy the ID from the URL or detail panel. You can also query the owners endpoint to get the list of owners.</td>
             </tr>
             <tr>
               <td><span class="f-name">startDate</span></td>
@@ -110,7 +110,7 @@
       <div class="where-grid">
         <div class="where-card">
           <div class="wc-key">owner-id</div>
-          <div class="wc-val">Open the owner record in Clearing. The ID appears in the URL or details panel.</div>
+          <div class="wc-val">Open the owner record in Clearing. The ID appears in the URL or details panel. You can also query the owners endpoint to get the list of owners.</div>
         </div>
         <div class="where-card">
           <div class="wc-key">key</div>
@@ -340,7 +340,7 @@
             <tr><td><span class="f-name">channel</span></td><td><span class="f-type">string</span></td><td class="f-desc">OTA display name.</td></tr>
             <tr><td><span class="f-name">status</span></td><td><span class="f-type">string</span></td><td class="f-desc">Booking status text.</td></tr>
             <tr><td><span class="f-name">lock</span></td><td><span class="f-type">boolean</span></td><td class="f-desc">Whether the booking is fully locked.</td></tr>
-            <tr><td><span class="f-name">commission</span></td><td><span class="f-type">number</span></td><td class="f-desc">Clearing commission, rounded to 2 decimal places.</td></tr>
+            <tr><td><span class="f-name">commission</span></td><td><span class="f-type">number</span></td><td class="f-desc">Management commission, rounded to 2 decimal places.</td></tr>
             <tr><td><span class="f-name">financials</span></td><td><span class="f-type">array</span></td><td class="f-desc">List of booking financial line objects (see below).</td></tr>
           </tbody>
         </table>
@@ -354,10 +354,10 @@
               </thead>
               <tbody>
                 <tr><td><span class="f-name">amount</span></td><td><span class="f-type">number</span></td><td class="f-desc">Line amount, rounded to 2 decimal places.</td></tr>
-                <tr><td><span class="f-name">category</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — sub-category.</td></tr>
-                <tr><td><span class="f-name">allocation</span></td><td><span class="f-type">string</span></td><td class="f-desc">OS_Trust display value.</td></tr>
-                <tr><td><span class="f-name">memo</span></td><td><span class="f-type">string</span></td><td class="f-desc">Line memo or note.</td></tr>
-                <tr><td><span class="f-name">recognized_date</span></td><td><span class="f-type">string</span></td><td class="f-desc">Formatted recognized date for this line.</td></tr>
+                <tr><td><span class="f-name">category</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — Category.</td></tr>
+                <tr><td><span class="f-name">allocation</span></td><td><span class="f-type">string</span></td><td class="f-desc">Trust allocation.</td></tr>
+                <tr><td><span class="f-name">memo</span></td><td><span class="f-type">string</span></td><td class="f-desc">Line memo.</td></tr>
+                <tr><td><span class="f-name">recognized_date</span></td><td><span class="f-type">string</span></td><td class="f-desc">Formatted recognized date.</td></tr>
               </tbody>
             </table>
           </div>
