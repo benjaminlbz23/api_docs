@@ -19,7 +19,7 @@
       <p>v1.1</p>
     </div>
 
-    <div class="nav-section">
+    <div class="nav-smaection">
       <div class="nav-section-title">Owner Data</div>
       <a href="#overview" class="nav-link active"><span class="nav-dot dot-gray"></span>Overview</a>
       <a href="#request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
@@ -27,6 +27,7 @@
       <a href="#transactions" class="nav-link"><span class="nav-dot dot-blue"></span>Transactions</a>
       <a href="#bookings" class="nav-link"><span class="nav-dot dot-green"></span>Bookings</a>
       <a href="#resolution" class="nav-link"><span class="nav-dot dot-amber"></span>Resolution Payouts</a>
+      <a href="#owner-statements" class="nav-link"><span class="nav-dot dot-gray"></span>Owner Statements</a>
     </div>
 
     <div class="nav-section">
@@ -46,7 +47,7 @@
     <section class="doc-section" id="overview">
       <div class="section-eyebrow">Clearing API · 1.1</div>
       <h2>Owner Data</h2>
-      <p>Retrieve all financial data for a specific owner across a given date range: reservations with line-level financials, expenses and transactions marked "to owner" and resolution payouts.</p>
+      <p>Retrieve all financial data for a specific owner across a given date range: reservations with line-level financials, expenses and transactions marked "to owner", resolution payouts, and a full list of owner statements.</p>
 
       <div class="endpoint-row">
         <span class="method-badge">POST</span>
@@ -156,7 +157,7 @@
     <!-- Response overview -->
     <section class="doc-section" id="response">
       <h2>Response</h2>
-      <p>A successful request returns HTTP 200 with a JSON object containing three top-level arrays: <code class="inline-code">transactions</code>, <code class="inline-code">bookings</code>, and <code class="inline-code">resolution_payouts</code>. Below is a representative example — truncated to one transaction and one booking for readability.</p>
+      <p>A successful request returns HTTP 200 with a JSON object containing four top-level arrays: <code class="inline-code">transactions</code>, <code class="inline-code">bookings</code>, <code class="inline-code">resolution_payouts</code>, and <code class="inline-code">owner_statements</code>. <code class="inline-code">owner_statements</code> includes all statements available for the owner and is not filtered by <code class="inline-code">startDate</code>/<code class="inline-code">endDate</code>. Below is a representative example — truncated for readability.</p>
 
       <div class="code-wrap">
         <div class="code-header">
@@ -278,6 +279,32 @@
       <span class="ck">"airbnb_resolution_id"</span>: <span class="cs">"RES-0001-0001"</span>
     }
     <span class="cc">// ...more resolution payouts (empty array if none for the period)</span>
+  ],
+  <span class="ck">"owner_statements"</span>: [
+    {
+      <span class="ck">"unique_id"</span>: <span class="cs">"1762963946849x529468496348871800"</span>,
+      <span class="ck">"type"</span>: <span class="cs">"By owner"</span>,
+      <span class="ck">"assets"</span>: [],
+      <span class="ck">"start"</span>: <span class="cn">20251201</span>,
+      <span class="ck">"end"</span>: <span class="cn">20251231</span>,
+      <span class="ck">"net"</span>: <span class="cn">0</span>,
+      <span class="ck">"pdf"</span>: <span class="cs">"https://example.cdn.com/owner-statement-2025-12.pdf"</span>
+    },
+    {
+      <span class="ck">"unique_id"</span>: <span class="cs">"1762874556055x306565730354150700"</span>,
+      <span class="ck">"type"</span>: <span class="cs">"By asset"</span>,
+      <span class="ck">"assets"</span>: [
+        {
+          <span class="ck">"id"</span>: <span class="cs">"1727271442999x670760258751734300"</span>,
+          <span class="ck">"name"</span>: <span class="cs">"Villa Capri 1"</span>
+        }
+      ],
+      <span class="ck">"start"</span>: <span class="cn">20251101</span>,
+      <span class="ck">"end"</span>: <span class="cn">20251130</span>,
+      <span class="ck">"net"</span>: <span class="cn">100</span>,
+      <span class="ck">"pdf"</span>: <span class="cs">"https://example.cdn.com/owner-statement-2025-11.pdf"</span>
+    }
+    <span class="cc">// ...all owner statements for this owner, regardless of requested date range</span>
   ]
 }</pre>
       </div>
@@ -358,6 +385,47 @@
                 <tr><td><span class="f-name">allocation</span></td><td><span class="f-type">string</span></td><td class="f-desc">Trust allocation.</td></tr>
                 <tr><td><span class="f-name">memo</span></td><td><span class="f-type">string</span></td><td class="f-desc">Line memo.</td></tr>
                 <tr><td><span class="f-name">recognized_date</span></td><td><span class="f-type">string</span></td><td class="f-desc">Formatted recognized date.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Owner Statements -->
+    <section class="doc-section" id="owner-statements">
+      <div class="section-eyebrow">Response → owner_statements[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-gray"></span> Owner Statement</h2>
+      <p>Each item in the <code class="inline-code">owner_statements</code> array represents a generated owner statement. This array always returns all statements available for the owner, regardless of the request date range.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-180">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">unique_id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique owner statement ID.</td></tr>
+            <tr><td><span class="f-name">type</span></td><td><span class="f-type">string</span></td><td class="f-desc">Statement grouping type (for example, <code>By owner</code> or <code>By asset</code>).</td></tr>
+            <tr><td><span class="f-name">assets</span></td><td><span class="f-type">array</span></td><td class="f-desc">List of assets included in the statement. Empty when the statement type is not asset-specific.</td></tr>
+            <tr><td><span class="f-name">start</span></td><td><span class="f-type">number</span></td><td class="f-desc">Statement start date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">end</span></td><td><span class="f-type">number</span></td><td class="f-desc">Statement end date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">net</span></td><td><span class="f-type">number</span></td><td class="f-desc">Net statement amount.</td></tr>
+            <tr><td><span class="f-name">pdf</span></td><td><span class="f-type">string</span></td><td class="f-desc">Direct URL to the statement PDF.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="nested-section">
+          <div class="nested-label">Owner statement asset object — assets[]</div>
+          <div class="nested-table">
+            <table>
+              <thead>
+                <tr><th class="col-field-160">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique asset ID included in the statement.</td></tr>
+                <tr><td><span class="f-name">name</span></td><td><span class="f-type">string</span></td><td class="f-desc">Display name of the asset included in the statement.</td></tr>
               </tbody>
             </table>
           </div>

@@ -505,6 +505,10 @@ td {
   background: #ba7517;
 }
 
+.ndot-gray {
+  background: #8a8f99;
+}
+
 .inline-code {
   font-family: var(--mono);
   font-size: 12px;
