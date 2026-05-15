@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clearing API Documentation</title>
+<link rel="icon" href="clearing_favicon.svg" type="image/svg+xml" sizes="any">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -37,6 +38,39 @@
       <a href="#owners-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
       <a href="#owners-response" class="nav-link"><span class="nav-dot dot-blue"></span>Owner object</a>
       <a href="#owners-asset" class="nav-link"><span class="nav-dot dot-green"></span>Asset object</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Assets</div>
+      <a href="#assets-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
+      <a href="#assets-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
+      <a href="#assets-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
+      <a href="#assets-asset" class="nav-link"><span class="nav-dot dot-green"></span>Asset object</a>
+      <a href="#assets-homeowner" class="nav-link"><span class="nav-dot dot-blue"></span>Homeowner object</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Get Transactions</div>
+      <a href="#get-transactions-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
+      <a href="#get-transactions-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
+      <a href="#get-transactions-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
+      <a href="#get-transactions-transaction" class="nav-link"><span class="nav-dot dot-blue"></span>Transaction object</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Get Bookings</div>
+      <a href="#get-bookings-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
+      <a href="#get-bookings-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
+      <a href="#get-bookings-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
+      <a href="#get-bookings-booking" class="nav-link"><span class="nav-dot dot-green"></span>Booking object</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Resolution Payouts</div>
+      <a href="#get-resolution-payout-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
+      <a href="#get-resolution-payout-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
+      <a href="#get-resolution-payout-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
+      <a href="#get-resolution-payout-payout" class="nav-link"><span class="nav-dot dot-amber"></span>Resolution payout object</a>
     </div>
   </nav>
 
@@ -631,8 +665,736 @@
       </div>
     </section>
 
+    <!-- ========================================== -->
+    <!-- ENDPOINT 3: GET ASSETS                      -->
+    <!-- ========================================== -->
+
+    <div class="endpoint-break">
+      <div class="endpoint-break-label">Endpoint · 3</div>
+      <h2 class="endpoint-break-title">Get Assets</h2>
+      <p class="endpoint-break-subtitle">List all assets in your Clearing account, including each asset's assigned homeowner.</p>
+    </div>
+
+    <!-- Assets Overview -->
+    <section class="doc-section" id="assets-overview">
+      <div class="section-eyebrow">Clearing API · 1.1</div>
+      <h2>Get Assets</h2>
+      <p>Returns all assets (properties) in your Clearing account. Each asset includes its display name, inactive status, and the homeowner assigned to it (if any).</p>
+
+      <div class="endpoint-row">
+        <span class="method-badge">POST</span>
+        <span class="endpoint-url">https://app.getclearing.co/api/1.1/wf/get-assets</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Assets Request -->
+    <section class="doc-section" id="assets-request">
+      <h2>Request</h2>
+      <p>Send a JSON body with the following fields. All fields are required.</p>
+
+      <div class="field-card">
+        <div class="field-card-header">Request body — application/json</div>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-field-140">Field</th>
+              <th class="col-type-90">Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="f-name">key</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc">API authentication key. <strong>Provided by Clearing.</strong> Treat this like a password — never expose it in client-side code.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">orga-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc">Your organization ID. <strong>Found in Clearing under Settings → Profile.</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Assets Example -->
+    <section class="doc-section" id="assets-example">
+      <h2>Example request</h2>
+      <p>A sample request to fetch all assets and their assigned homeowners.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">curl</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ck">curl</span> -X POST https://app.getclearing.co/api/1.1/wf/get-assets \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{</span>
+    <span class="cs">"key"</span>: <span class="cs">"X7kPmQ2vN8rT4wY6zA1bC3dE5fG9hJ0kL2mN4oP6qR8sT0uV2wX4y..."</span>,
+    <span class="cs">"orga-id"</span>: <span class="cs">"org_0001x000000000000000000000001"</span>
+  <span class="cs">'}'</span></pre>
+      </div>
+
+      <h3>Example response</h3>
+      <p>A successful request returns HTTP 200 with a JSON object containing an <code class="inline-code">assets</code> array.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">json — example response</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  <span class="ck">"assets"</span>: [
+    {
+      <span class="ck">"id"</span>: <span class="cs">"ast_0001x000000000000000000000001"</span>,
+      <span class="ck">"name"</span>: <span class="cs">"Sunset Villa"</span>,
+      <span class="ck">"inactive"</span>: <span class="cs">"no"</span>,
+      <span class="ck">"homeowner"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"own_0001x000000000000000000000001"</span>,
+        <span class="ck">"first_name"</span>: <span class="cs">"Jane"</span>,
+        <span class="ck">"last_name"</span>: <span class="cs">"Smith"</span>
+      }
+    },
+    {
+      <span class="ck">"id"</span>: <span class="cs">"ast_0001x000000000000000000000002"</span>,
+      <span class="ck">"name"</span>: <span class="cs">"Harbor House"</span>,
+      <span class="ck">"inactive"</span>: <span class="cs">"no"</span>,
+      <span class="ck">"homeowner"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">""</span>,
+        <span class="ck">"first_name"</span>: <span class="cs">""</span>,
+        <span class="ck">"last_name"</span>: <span class="cs">""</span>
+      }
+    }
+    <span class="cc">// ...more assets</span>
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Asset object (get-assets) -->
+    <section class="doc-section" id="assets-asset">
+      <div class="section-eyebrow">Response → assets[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-green"></span> Asset</h2>
+      <p>Each item in the <code class="inline-code">assets</code> array represents a property in your Clearing account.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-140">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique asset (property) ID.</td></tr>
+            <tr><td><span class="f-name">name</span></td><td><span class="f-type">string</span></td><td class="f-desc">Display name of the asset.</td></tr>
+            <tr><td><span class="f-name">inactive</span></td><td><span class="f-type">string</span></td><td class="f-desc">Whether the asset is inactive. Returns <code>no</code> or <code>yes</code>.</td></tr>
+            <tr><td><span class="f-name">homeowner</span></td><td><span class="f-type">object</span></td><td class="f-desc">Homeowner assigned to this asset (see below). Fields are empty strings when no homeowner is assigned.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Homeowner object (get-assets) -->
+    <section class="doc-section" id="assets-homeowner">
+      <div class="section-eyebrow">Asset → homeowner</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-blue"></span> Homeowner</h2>
+      <p>The nested <code class="inline-code">homeowner</code> object on each asset contains the assigned homeowner's ID and name.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-140">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique homeowner ID. Empty string if no homeowner is assigned.</td></tr>
+            <tr><td><span class="f-name">first_name</span></td><td><span class="f-type">string</span></td><td class="f-desc">Homeowner's first name. Empty string if none.</td></tr>
+            <tr><td><span class="f-name">last_name</span></td><td><span class="f-type">string</span></td><td class="f-desc">Homeowner's last name. Empty string if none.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ENDPOINT 4: GET TRANSACTIONS                -->
+    <!-- ========================================== -->
+
+    <div class="endpoint-break">
+      <div class="endpoint-break-label">Endpoint · 4</div>
+      <h2 class="endpoint-break-title">Get Transactions</h2>
+      <p class="endpoint-break-subtitle">List transactions across your organization for a date range, with optional filters by owner, asset, or account.</p>
+    </div>
+
+    <!-- Get Transactions Overview -->
+    <section class="doc-section" id="get-transactions-overview">
+      <div class="section-eyebrow">Clearing API · 1.1</div>
+      <h2>Get Transactions</h2>
+      <p>Returns financial transactions for your organization within the requested date range. Optionally filter results to a specific owner, asset, or account.</p>
+
+      <div class="endpoint-row">
+        <span class="method-badge">POST</span>
+        <span class="endpoint-url">https://app.getclearing.co/api/1.1/wf/get-transactions</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Transactions Request -->
+    <section class="doc-section" id="get-transactions-request">
+      <h2>Request</h2>
+      <p>Send a JSON body with the following fields. <code class="inline-code">startDate</code>, <code class="inline-code">endDate</code>, <code class="inline-code">key</code>, and <code class="inline-code">orga-id</code> are required; all other fields are optional filters.</p>
+
+      <div class="field-card">
+        <div class="field-card-header">Request body — application/json</div>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-field-140">Field</th>
+              <th class="col-type-90">Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="f-name">startDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc"><strong>Required.</strong> Start of the date range in <code>YYYYMMDD</code> format. Example: <code>20260101</code> for January 1, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">endDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc"><strong>Required.</strong> End of the date range in <code>YYYYMMDD</code> format. Example: <code>20260410</code> for April 10, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">key</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> API authentication key. <strong>Provided by Clearing.</strong> Treat this like a password — never expose it in client-side code.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">orga-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> Your organization ID. <strong>Found in Clearing under Settings → Profile.</strong></td>
+            </tr>
+            <tr>
+              <td><span class="f-name">owner-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to transactions for a single owner. Use the owners endpoint or owner details in Clearing to find the ID.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">asset-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to transactions for a single asset (property).</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">account-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to transactions for a single account.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">ℹ</span>
+        <span>Dates must be plain numbers — no dashes, slashes, or quotes. April 10, 2026 → <code>20260410</code></span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Transactions Example -->
+    <section class="doc-section" id="get-transactions-example">
+      <h2>Example request</h2>
+      <p>A sample request fetching all transactions for an organization between January 1 and April 10, 2026. Optional filter fields are shown commented out.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">curl</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ck">curl</span> -X POST https://app.getclearing.co/api/1.1/wf/get-transactions \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{</span>
+    <span class="cc">// "owner-id": "own_0001x000000000000000000000001",</span>
+    <span class="cc">// "asset-id": "ast_0001x000000000000000000000001",</span>
+    <span class="cc">// "account-id": "acc_0001x000000000000000000000001",</span>
+    <span class="cs">"startDate"</span>: <span class="cn">20260101</span>,
+    <span class="cs">"endDate"</span>: <span class="cn">20260410</span>,
+    <span class="cs">"key"</span>: <span class="cs">"X7kPmQ2vN8rT4wY6zA1bC3dE5fG9hJ0kL2mN4oP6qR8sT0uV2wX4y..."</span>,
+    <span class="cs">"orga-id"</span>: <span class="cs">"org_0001x000000000000000000000001"</span>
+  <span class="cs">'}'</span></pre>
+      </div>
+
+      <h3>Example response</h3>
+      <p>A successful request returns HTTP 200 with a JSON object containing a <code class="inline-code">transactions</code> array.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">json — example response</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  <span class="ck">"transactions"</span>: [
+    {
+      <span class="ck">"id"</span>: <span class="cs">"txn_0001x000000000000000000000001"</span>,
+      <span class="ck">"amount"</span>: <span class="cn">-175</span>,
+      <span class="ck">"date"</span>: <span class="cn">20260301</span>,
+      <span class="ck">"category"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"cat_0001x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Tech Fee"</span>
+      },
+      <span class="ck">"asset"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"ast_0001x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Sunset Villa"</span>
+      },
+      <span class="ck">"owner"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"own_0001x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Jane Smith"</span>
+      },
+      <span class="ck">"reimbursable"</span>: <span class="cs">"yes"</span>,
+      <span class="ck">"locked"</span>: <span class="cs">"yes"</span>,
+      <span class="ck">"account"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"acc_0001x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Journal Entry"</span>
+      },
+      <span class="ck">"merchant"</span>: <span class="cs">"Management"</span>,
+      <span class="ck">"memo"</span>: <span class="cs">"AC Filter Change"</span>,
+      <span class="ck">"markup"</span>: <span class="cn">0</span>,
+      <span class="ck">"level"</span>: <span class="cs">"Main"</span>,
+      <span class="ck">"has_sub_transactions?"</span>: <span class="cs">"no"</span>,
+      <span class="ck">"allocation"</span>: <span class="cs">"To owner"</span>,
+      <span class="ck">"parent_unique_id"</span>: <span class="cs">"txn_0001x000000000000000000000001"</span>
+    }
+    <span class="cc">// ...more transactions</span>
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Transaction object (get-transactions) -->
+    <section class="doc-section" id="get-transactions-transaction">
+      <div class="section-eyebrow">Response → transactions[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-blue"></span> Transaction</h2>
+      <p>Each item in the <code class="inline-code">transactions</code> array represents a single financial transaction.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-180">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique transaction ID.</td></tr>
+            <tr><td><span class="f-name">amount</span></td><td><span class="f-type">number</span></td><td class="f-desc">Transaction amount, rounded to 2 decimal places.</td></tr>
+            <tr><td><span class="f-name">date</span></td><td><span class="f-type">number</span></td><td class="f-desc">Transaction date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">category</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — transaction category.</td></tr>
+            <tr><td><span class="f-name">asset</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — associated property.</td></tr>
+            <tr><td><span class="f-name">owner</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — homeowner.</td></tr>
+            <tr><td><span class="f-name">reimbursable</span></td><td><span class="f-type">string</span></td><td class="f-desc">Whether the transaction is reimbursable. Returns <code>yes</code> or <code>no</code>.</td></tr>
+            <tr><td><span class="f-name">locked</span></td><td><span class="f-type">string</span></td><td class="f-desc">Whether the transaction is locked. Returns <code>yes</code> or <code>no</code>.</td></tr>
+            <tr><td><span class="f-name">account</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — account associated with the transaction.</td></tr>
+            <tr><td><span class="f-name">merchant</span></td><td><span class="f-type">string</span></td><td class="f-desc">To/from merchant name.</td></tr>
+            <tr><td><span class="f-name">memo</span></td><td><span class="f-type">string</span></td><td class="f-desc">Transaction memo or note.</td></tr>
+            <tr><td><span class="f-name">markup</span></td><td><span class="f-type">number</span></td><td class="f-desc">Markup amount, rounded to 2 decimal places.</td></tr>
+            <tr><td><span class="f-name">level</span></td><td><span class="f-type">string</span></td><td class="f-desc">Transaction level. Returns <code>Main</code> or <code>Sub</code>.</td></tr>
+            <tr><td><span class="f-name">has_sub_transactions?</span></td><td><span class="f-type">string</span></td><td class="f-desc">Whether the transaction has sub-transactions. Returns <code>yes</code> or <code>no</code>.</td></tr>
+            <tr><td><span class="f-name">allocation</span></td><td><span class="f-type">string</span></td><td class="f-desc">Trust allocation (for example, <code>To owner</code>, <code>To management</code>, or <code>Exclude</code>).</td></tr>
+            <tr><td><span class="f-name">parent_unique_id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique ID of the parent transaction.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ENDPOINT 5: GET BOOKINGS                    -->
+    <!-- ========================================== -->
+
+    <div class="endpoint-break">
+      <div class="endpoint-break-label">Endpoint · 5</div>
+      <h2 class="endpoint-break-title">Get Bookings</h2>
+      <p class="endpoint-break-subtitle">List reservations across your organization for a date range, with optional filters by owner or asset.</p>
+    </div>
+
+    <!-- Get Bookings Overview -->
+    <section class="doc-section" id="get-bookings-overview">
+      <div class="section-eyebrow">Clearing API · 1.1</div>
+      <h2>Get Bookings</h2>
+      <p>Returns bookings (reservations) for your organization within the requested date range. Each booking includes line-level financials. Optionally filter results to a specific owner or asset.</p>
+
+      <div class="endpoint-row">
+        <span class="method-badge">POST</span>
+        <span class="endpoint-url">https://app.getclearing.co/api/1.1/wf/get-bookings</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Bookings Request -->
+    <section class="doc-section" id="get-bookings-request">
+      <h2>Request</h2>
+      <p>Send a JSON body with the following fields. <code class="inline-code">startDate</code>, <code class="inline-code">endDate</code>, <code class="inline-code">key</code>, and <code class="inline-code">orga-id</code> are required; all other fields are optional filters.</p>
+
+      <div class="field-card">
+        <div class="field-card-header">Request body — application/json</div>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-field-140">Field</th>
+              <th class="col-type-90">Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="f-name">startDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc"><strong>Required.</strong> Start of the date range in <code>YYYYMMDD</code> format. Example: <code>20260101</code> for January 1, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">endDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc"><strong>Required.</strong> End of the date range in <code>YYYYMMDD</code> format. Example: <code>20260410</code> for April 10, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">key</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> API authentication key. <strong>Provided by Clearing.</strong> Treat this like a password — never expose it in client-side code.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">orga-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> Your organization ID. <strong>Found in Clearing under Settings → Profile.</strong></td>
+            </tr>
+            <tr>
+              <td><span class="f-name">owner-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to bookings for a single owner.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">asset-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to bookings for a single asset (property).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">ℹ</span>
+        <span>Dates must be plain numbers — no dashes, slashes, or quotes. April 10, 2026 → <code>20260410</code></span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Bookings Example -->
+    <section class="doc-section" id="get-bookings-example">
+      <h2>Example request</h2>
+      <p>A sample request fetching all bookings between January 1 and April 10, 2026. Optional filter fields are shown commented out.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">curl</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ck">curl</span> -X POST https://app.getclearing.co/api/1.1/wf/get-bookings \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{</span>
+    <span class="cc">// "owner-id": "own_0001x000000000000000000000001",</span>
+    <span class="cc">// "asset-id": "ast_0001x000000000000000000000001",</span>
+    <span class="cs">"startDate"</span>: <span class="cn">20260101</span>,
+    <span class="cs">"endDate"</span>: <span class="cn">20260410</span>,
+    <span class="cs">"key"</span>: <span class="cs">"X7kPmQ2vN8rT4wY6zA1bC3dE5fG9hJ0kL2mN4oP6qR8sT0uV2wX4y..."</span>,
+    <span class="cs">"orga-id"</span>: <span class="cs">"org_0001x000000000000000000000001"</span>
+  <span class="cs">'}'</span></pre>
+      </div>
+
+      <h3>Example response</h3>
+      <p>A successful request returns HTTP 200 with a JSON object containing a <code class="inline-code">bookings</code> array.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">json — example response</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  <span class="ck">"bookings"</span>: [
+    {
+      <span class="ck">"id"</span>: <span class="cs">"bkg_0001x000000000000000000000001"</span>,
+      <span class="ck">"pms_id"</span>: <span class="cs">"10000001"</span>,
+      <span class="ck">"channel_code"</span>: <span class="cs">"HMXXXXXXXX1"</span>,
+      <span class="ck">"checkin"</span>: <span class="cn">20260306</span>,
+      <span class="ck">"checkout"</span>: <span class="cn">20260310</span>,
+      <span class="ck">"recognized_date"</span>: <span class="cn">20260310</span>,
+      <span class="ck">"reservation_date"</span>: <span class="cn">20260303</span>,
+      <span class="ck">"asset"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"ast_0001x000000000000000000000002"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Harbor House"</span>
+      },
+      <span class="ck">"owner"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"own_0001x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Jane Smith"</span>
+      },
+      <span class="ck">"channel"</span>: <span class="cs">"Airbnb"</span>,
+      <span class="ck">"status"</span>: <span class="cs">"active"</span>,
+      <span class="ck">"lock"</span>: <span class="cs">"yes"</span>,
+      <span class="ck">"commission"</span>: <span class="cn">73.62</span>,
+      <span class="ck">"financials"</span>: [
+        {
+          <span class="ck">"amount"</span>: <span class="cn">67.45</span>,
+          <span class="ck">"category"</span>: { <span class="ck">"id"</span>: <span class="cs">"cat_0002x000000000000000000000001"</span>, <span class="ck">"name"</span>: <span class="cs">"Resort Fee"</span> },
+          <span class="ck">"allocation"</span>: <span class="cs">"To management"</span>,
+          <span class="ck">"memo"</span>: <span class="cs">"Resort Fee"</span>,
+          <span class="ck">"recognized_date"</span>: <span class="cn">20260310</span>
+        },
+        {
+          <span class="ck">"amount"</span>: <span class="cn">272.81</span>,
+          <span class="ck">"category"</span>: { <span class="ck">"id"</span>: <span class="cs">"cat_0002x000000000000000000000003"</span>, <span class="ck">"name"</span>: <span class="cs">"Accommodation Revenue"</span> },
+          <span class="ck">"allocation"</span>: <span class="cs">"To owner"</span>,
+          <span class="ck">"memo"</span>: <span class="cs">"Net Accommodation Revenue"</span>,
+          <span class="ck">"recognized_date"</span>: <span class="cn">20260310</span>
+        }
+        <span class="cc">// ...more financial lines</span>
+      ]
+    }
+    <span class="cc">// ...more bookings</span>
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Booking object (get-bookings) -->
+    <section class="doc-section" id="get-bookings-booking">
+      <div class="section-eyebrow">Response → bookings[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-green"></span> Booking</h2>
+      <p>Each item in the <code class="inline-code">bookings</code> array represents a reservation. Each booking contains a nested <code class="inline-code">financials</code> array with line-level breakdown.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-160">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique booking ID.</td></tr>
+            <tr><td><span class="f-name">pms_id</span></td><td><span class="f-type">string</span></td><td class="f-desc">PMS booking ID.</td></tr>
+            <tr><td><span class="f-name">channel_code</span></td><td><span class="f-type">string</span></td><td class="f-desc">OTA external channel code.</td></tr>
+            <tr><td><span class="f-name">checkin</span></td><td><span class="f-type">number</span></td><td class="f-desc">Check-in date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">checkout</span></td><td><span class="f-type">number</span></td><td class="f-desc">Check-out date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">recognized_date</span></td><td><span class="f-type">number</span></td><td class="f-desc">Recognized date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">reservation_date</span></td><td><span class="f-type">number</span></td><td class="f-desc">Reservation date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">asset</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — associated property.</td></tr>
+            <tr><td><span class="f-name">owner</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — homeowner.</td></tr>
+            <tr><td><span class="f-name">channel</span></td><td><span class="f-type">string</span></td><td class="f-desc">OTA display name.</td></tr>
+            <tr><td><span class="f-name">status</span></td><td><span class="f-type">string</span></td><td class="f-desc">Booking status text.</td></tr>
+            <tr><td><span class="f-name">lock</span></td><td><span class="f-type">string</span></td><td class="f-desc">Whether the booking is fully locked. Returns <code>yes</code> or <code>no</code>.</td></tr>
+            <tr><td><span class="f-name">commission</span></td><td><span class="f-type">number</span></td><td class="f-desc">Management commission, rounded to 2 decimal places.</td></tr>
+            <tr><td><span class="f-name">financials</span></td><td><span class="f-type">array</span></td><td class="f-desc">List of booking financial line objects (see below).</td></tr>
+          </tbody>
+        </table>
+
+        <div class="nested-section">
+          <div class="nested-label">Booking financial line object — financials[]</div>
+          <div class="nested-table">
+            <table>
+              <thead>
+                <tr><th class="col-field-160">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="f-name">amount</span></td><td><span class="f-type">number</span></td><td class="f-desc">Line amount, rounded to 2 decimal places.</td></tr>
+                <tr><td><span class="f-name">category</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — line category.</td></tr>
+                <tr><td><span class="f-name">allocation</span></td><td><span class="f-type">string</span></td><td class="f-desc">Trust allocation (for example, <code>To owner</code>, <code>To management</code>, or <code>Exclude</code>).</td></tr>
+                <tr><td><span class="f-name">memo</span></td><td><span class="f-type">string</span></td><td class="f-desc">Line memo.</td></tr>
+                <tr><td><span class="f-name">recognized_date</span></td><td><span class="f-type">number</span></td><td class="f-desc">Recognized date in <code>YYYYMMDD</code> format.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ENDPOINT 6: GET RESOLUTION PAYOUT           -->
+    <!-- ========================================== -->
+
+    <div class="endpoint-break">
+      <div class="endpoint-break-label">Endpoint · 6</div>
+      <h2 class="endpoint-break-title">Get Resolution Payout</h2>
+      <p class="endpoint-break-subtitle">List resolution payouts across your organization for a date range, with optional filters by owner or asset.</p>
+    </div>
+
+    <!-- Get Resolution Payout Overview -->
+    <section class="doc-section" id="get-resolution-payout-overview">
+      <div class="section-eyebrow">Clearing API · 1.1</div>
+      <h2>Get Resolution Payout</h2>
+      <p>Returns resolution payouts (for example, Airbnb resolution payouts) for your organization within the requested date range. Optionally filter results to a specific owner or asset.</p>
+
+      <div class="endpoint-row">
+        <span class="method-badge">POST</span>
+        <span class="endpoint-url">https://app.getclearing.co/api/1.1/wf/get-resolution-payout</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Resolution Payout Request -->
+    <section class="doc-section" id="get-resolution-payout-request">
+      <h2>Request</h2>
+      <p>Send a JSON body with the following fields. <code class="inline-code">startDate</code>, <code class="inline-code">endDate</code>, <code class="inline-code">key</code>, and <code class="inline-code">orga-id</code> are required; all other fields are optional filters.</p>
+
+      <div class="field-card">
+        <div class="field-card-header">Request body — application/json</div>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-field-140">Field</th>
+              <th class="col-type-90">Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="f-name">startDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc"><strong>Required.</strong> Start of the date range in <code>YYYYMMDD</code> format. Example: <code>20260101</code> for January 1, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">endDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc"><strong>Required.</strong> End of the date range in <code>YYYYMMDD</code> format. Example: <code>20260410</code> for April 10, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">key</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> API authentication key. <strong>Provided by Clearing.</strong> Treat this like a password — never expose it in client-side code.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">orga-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> Your organization ID. <strong>Found in Clearing under Settings → Profile.</strong></td>
+            </tr>
+            <tr>
+              <td><span class="f-name">owner-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to resolution payouts for a single owner.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">asset-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to resolution payouts for a single asset (property).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">ℹ</span>
+        <span>Dates must be plain numbers — no dashes, slashes, or quotes. April 10, 2026 → <code>20260410</code></span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Resolution Payout Example -->
+    <section class="doc-section" id="get-resolution-payout-example">
+      <h2>Example request</h2>
+      <p>A sample request fetching all resolution payouts between January 1 and April 10, 2026. Optional filter fields are shown commented out.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">curl</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ck">curl</span> -X POST https://app.getclearing.co/api/1.1/wf/get-resolution-payout \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{</span>
+    <span class="cc">// "owner-id": "own_0001x000000000000000000000001",</span>
+    <span class="cc">// "asset-id": "ast_0001x000000000000000000000001",</span>
+    <span class="cs">"startDate"</span>: <span class="cn">20260101</span>,
+    <span class="cs">"endDate"</span>: <span class="cn">20260410</span>,
+    <span class="cs">"key"</span>: <span class="cs">"X7kPmQ2vN8rT4wY6zA1bC3dE5fG9hJ0kL2mN4oP6qR8sT0uV2wX4y..."</span>,
+    <span class="cs">"orga-id"</span>: <span class="cs">"org_0001x000000000000000000000001"</span>
+  <span class="cs">'}'</span></pre>
+      </div>
+
+      <h3>Example response</h3>
+      <p>A successful request returns HTTP 200 with a JSON object containing a <code class="inline-code">resolution_payouts</code> array.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">json — example response</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  <span class="ck">"resolution_payouts"</span>: [
+    {
+      <span class="ck">"id"</span>: <span class="cs">"rpt_0001x000000000000000000000001"</span>,
+      <span class="ck">"recognized_date"</span>: <span class="cn">20260315</span>,
+      <span class="ck">"asset"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"ast_0001x000000000000000000000002"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Harbor House"</span>
+      },
+      <span class="ck">"owner"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"own_0001x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Jane Smith"</span>
+      },
+      <span class="ck">"lock"</span>: <span class="cs">"yes"</span>,
+      <span class="ck">"amount_to_owner"</span>: <span class="cn">125.50</span>,
+      <span class="ck">"reservation_id"</span>: <span class="cs">"HMXXXXXXXX2"</span>,
+      <span class="ck">"category"</span>: {
+        <span class="ck">"id"</span>: <span class="cs">"cat_0003x000000000000000000000001"</span>,
+        <span class="ck">"name"</span>: <span class="cs">"Guest Damage"</span>
+      },
+      <span class="ck">"reason"</span>: <span class="cs">"Damage to property"</span>,
+      <span class="ck">"airbnb_resolution_id"</span>: <span class="cs">"RES-0001-0001"</span>,
+      <span class="ck">"amount_to_management"</span>: <span class="cn">0</span>
+    }
+    <span class="cc">// ...more resolution payouts</span>
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Resolution payout object (get-resolution-payout) -->
+    <section class="doc-section" id="get-resolution-payout-payout">
+      <div class="section-eyebrow">Response → resolution_payouts[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-amber"></span> Resolution Payout</h2>
+      <p>Each item in the <code class="inline-code">resolution_payouts</code> array represents a payout resolution (for example, an Airbnb resolution payout).</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-180">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique resolution payout ID.</td></tr>
+            <tr><td><span class="f-name">recognized_date</span></td><td><span class="f-type">number</span></td><td class="f-desc">Recognized date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">asset</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — associated property.</td></tr>
+            <tr><td><span class="f-name">owner</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — homeowner.</td></tr>
+            <tr><td><span class="f-name">lock</span></td><td><span class="f-type">string</span></td><td class="f-desc">Whether the payout is locked. Returns <code>yes</code> or <code>no</code>.</td></tr>
+            <tr><td><span class="f-name">amount_to_owner</span></td><td><span class="f-type">number</span></td><td class="f-desc">Payout amount to the owner, rounded to 2 decimal places.</td></tr>
+            <tr><td><span class="f-name">reservation_id</span></td><td><span class="f-type">string</span></td><td class="f-desc">External reservation code.</td></tr>
+            <tr><td><span class="f-name">category</span></td><td><span class="f-type">object</span></td><td class="f-desc"><code>{ id, name }</code> — payout category.</td></tr>
+            <tr><td><span class="f-name">reason</span></td><td><span class="f-type">string</span></td><td class="f-desc">Reason name for the payout.</td></tr>
+            <tr><td><span class="f-name">airbnb_resolution_id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Airbnb resolution ID, if applicable.</td></tr>
+            <tr><td><span class="f-name">amount_to_management</span></td><td><span class="f-type">number</span></td><td class="f-desc">Payout amount to management, rounded to 2 decimal places.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <p class="doc-footer">
-      Clearing API · v1.1 · Owner Data &amp; Owners endpoints
+      Clearing API · v1.1 · Owner Data, Owners, Get Assets, Get Transactions, Get Bookings &amp; Get Resolution Payout endpoints
     </p>
 
   </main>
