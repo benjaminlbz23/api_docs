@@ -72,6 +72,14 @@
       <a href="#get-resolution-payout-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
       <a href="#get-resolution-payout-payout" class="nav-link"><span class="nav-dot dot-amber"></span>Resolution payout object</a>
     </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Get Categories</div>
+      <a href="#get-categories-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
+      <a href="#get-categories-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
+      <a href="#get-categories-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
+      <a href="#get-categories-category" class="nav-link"><span class="nav-dot dot-blue"></span>Category object</a>
+    </div>
   </nav>
 
   <!-- Main -->
@@ -1393,8 +1401,138 @@
       </div>
     </section>
 
+    <!-- ========================================== -->
+    <!-- ENDPOINT 7: GET CATEGORIES                  -->
+    <!-- ========================================== -->
+
+    <div class="endpoint-break">
+      <div class="endpoint-break-label">Endpoint · 7</div>
+      <h2 class="endpoint-break-title">Get Categories</h2>
+      <p class="endpoint-break-subtitle">List all categories in your Clearing account, with optional filter by category ID.</p>
+    </div>
+
+    <!-- Get Categories Overview -->
+    <section class="doc-section" id="get-categories-overview">
+      <div class="section-eyebrow">Clearing API · 1.1</div>
+      <h2>Get Categories</h2>
+      <p>Returns all categories configured in your Clearing account. Each category includes its unique ID and display name. Optionally filter results to a single category.</p>
+
+      <div class="endpoint-row">
+        <span class="method-badge">POST</span>
+        <span class="endpoint-url">https://app.getclearing.co/api/1.1/wf/get-categories</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Categories Request -->
+    <section class="doc-section" id="get-categories-request">
+      <h2>Request</h2>
+      <p>Send a JSON body with the following fields. <code class="inline-code">key</code> and <code class="inline-code">orga-id</code> are required; <code class="inline-code">category-id</code> is an optional filter.</p>
+
+      <div class="field-card">
+        <div class="field-card-header">Request body — application/json</div>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-field-140">Field</th>
+              <th class="col-type-90">Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="f-name">key</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> API authentication key. <strong>Provided by Clearing.</strong> Treat this like a password — never expose it in client-side code.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">orga-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Required.</strong> Your organization ID. <strong>Found in Clearing under Settings → Profile.</strong></td>
+            </tr>
+            <tr>
+              <td><span class="f-name">category-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc"><strong>Optional.</strong> Filter to a single category.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Get Categories Example -->
+    <section class="doc-section" id="get-categories-example">
+      <h2>Example request</h2>
+      <p>A sample request to fetch all categories. The optional <code class="inline-code">category-id</code> filter is shown commented out.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">curl</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ck">curl</span> -X POST https://app.getclearing.co/api/1.1/wf/get-categories \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{</span>
+    <span class="cc">// "category-id": "cat_0003x000000000000000000000001",</span>
+    <span class="cs">"key"</span>: <span class="cs">"X7kPmQ2vN8rT4wY6zA1bC3dE5fG9hJ0kL2mN4oP6qR8sT0uV2wX4y..."</span>,
+    <span class="cs">"orga-id"</span>: <span class="cs">"org_0001x000000000000000000000001"</span>
+  <span class="cs">'}'</span></pre>
+      </div>
+
+      <h3>Example response</h3>
+      <p>A successful request returns HTTP 200 with a JSON object containing a <code class="inline-code">categories</code> array.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">json — example response</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  <span class="ck">"categories"</span>: [
+    {
+      <span class="ck">"id"</span>: <span class="cs">"cat_0001x000000000000000000000001"</span>,
+      <span class="ck">"name"</span>: <span class="cs">"Rent"</span>
+    },
+    {
+      <span class="ck">"id"</span>: <span class="cs">"cat_0002x000000000000000000000001"</span>,
+      <span class="ck">"name"</span>: <span class="cs">"Cleaning Fee"</span>
+    },
+    {
+      <span class="ck">"id"</span>: <span class="cs">"cat_0003x000000000000000000000001"</span>,
+      <span class="ck">"name"</span>: <span class="cs">"Guest Damage"</span>
+    }
+    <span class="cc">// ...more categories</span>
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Category object (get-categories) -->
+    <section class="doc-section" id="get-categories-category">
+      <div class="section-eyebrow">Response → categories[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-blue"></span> Category</h2>
+      <p>Each item in the <code class="inline-code">categories</code> array represents a transaction category in your Clearing account.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-140">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique category ID.</td></tr>
+            <tr><td><span class="f-name">name</span></td><td><span class="f-type">string</span></td><td class="f-desc">Display name of the category.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <p class="doc-footer">
-      Clearing API · v1.1 · Owner Data, Owners, Get Assets, Get Transactions, Get Bookings &amp; Get Resolution Payout endpoints
+      Clearing API · v1.1 · Owner Data, Owners, Get Assets, Get Transactions, Get Bookings, Get Resolution Payout &amp; Get Categories endpoints
     </p>
 
   </main>
