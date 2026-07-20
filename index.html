@@ -32,6 +32,14 @@
     </div>
 
     <div class="nav-section">
+      <div class="nav-section-title">Owner Statements</div>
+      <a href="#get-owner-statements-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
+      <a href="#get-owner-statements-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
+      <a href="#get-owner-statements-example" class="nav-link"><span class="nav-dot dot-gray"></span>Example</a>
+      <a href="#get-owner-statements-statement" class="nav-link"><span class="nav-dot dot-gray"></span>Owner statement object</a>
+    </div>
+
+    <div class="nav-section">
       <div class="nav-section-title">Owners</div>
       <a href="#owners-overview" class="nav-link"><span class="nav-dot dot-gray"></span>Overview</a>
       <a href="#owners-request" class="nav-link"><span class="nav-dot dot-gray"></span>Request</a>
@@ -1531,8 +1539,186 @@
       </div>
     </section>
 
+    <!-- ========================================== -->
+    <!-- ENDPOINT 8: OWNER STATEMENTS                -->
+    <!-- ========================================== -->
+
+    <div class="endpoint-break">
+      <div class="endpoint-break-label">Endpoint · 8</div>
+      <h2 class="endpoint-break-title">Owner Statements</h2>
+      <p class="endpoint-break-subtitle">List owner statements for a specific owner within a date range, including PDF download links.</p>
+    </div>
+
+    <!-- Owner Statements Overview -->
+    <section class="doc-section" id="get-owner-statements-overview">
+      <div class="section-eyebrow">Clearing API · 1.1</div>
+      <h2>Owner Statements</h2>
+      <p>Returns generated owner statements for a specific owner within the requested date range. Only statements with an available PDF are included. Results are sorted by statement end date, newest first.</p>
+
+      <div class="endpoint-row">
+        <span class="method-badge">POST</span>
+        <span class="endpoint-url">https://app.getclearing.co/api/1.1/wf/owner-statements</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Owner Statements Request -->
+    <section class="doc-section" id="get-owner-statements-request">
+      <h2>Request</h2>
+      <p>Send a JSON body with the following fields. All fields are required — same parameters as the <a href="#request">Owner Data</a> endpoint.</p>
+
+      <div class="field-card">
+        <div class="field-card-header">Request body — application/json</div>
+        <table>
+          <thead>
+            <tr>
+              <th class="col-field-140">Field</th>
+              <th class="col-type-90">Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="f-name">owner-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc">Unique owner identifier. <strong>Found by opening owner details in Clearing</strong> — copy the ID from the URL or detail panel. You can also query the owners endpoint to get the list of owners.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">startDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc">Start of the date range in <code>YYYYMMDD</code> format. Statements whose start date falls on or after this date are included. Example: <code>20260301</code> for March 1, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">endDate</span></td>
+              <td><span class="f-type">number</span></td>
+              <td class="f-desc">End of the date range in <code>YYYYMMDD</code> format. Statements whose end date falls on or before this date are included. Example: <code>20260331</code> for March 31, 2026.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">key</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc">API authentication key. <strong>Provided by Clearing.</strong> Treat this like a password — never expose it in client-side code.</td>
+            </tr>
+            <tr>
+              <td><span class="f-name">orga-id</span></td>
+              <td><span class="f-type">string</span></td>
+              <td class="f-desc">Your organization ID. <strong>Found in Clearing under Settings → Profile.</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">ℹ</span>
+        <span>Dates must be plain numbers — no dashes, slashes, or quotes. March 31, 2026 → <code>20260331</code></span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Owner Statements Example -->
+    <section class="doc-section" id="get-owner-statements-example">
+      <h2>Example request</h2>
+      <p>A sample request fetching owner statements for the month of March 2026.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">curl</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="ck">curl</span> -X POST https://app.getclearing.co/api/1.1/wf/owner-statements \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{</span>
+    <span class="cs">"owner-id"</span>: <span class="cs">"own_0001x000000000000000000000001"</span>,
+    <span class="cs">"startDate"</span>: <span class="cn">20260301</span>,
+    <span class="cs">"endDate"</span>: <span class="cn">20260331</span>,
+    <span class="cs">"key"</span>: <span class="cs">"X7kPmQ2vN8rT4wY6zA1bC3dE5fG9hJ0kL2mN4oP6qR8sT0uV2wX4y..."</span>,
+    <span class="cs">"orga-id"</span>: <span class="cs">"org_0001x000000000000000000000001"</span>
+  <span class="cs">'}'</span></pre>
+      </div>
+
+      <h3>Example response</h3>
+      <p>A successful request returns HTTP 200 with a JSON object containing an <code class="inline-code">owner_statements</code> array.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">json — example response</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>{
+  <span class="ck">"owner_statements"</span>: [
+    {
+      <span class="ck">"unique_id"</span>: <span class="cs">"1762963946849x529468496348871800"</span>,
+      <span class="ck">"type"</span>: <span class="cs">"By owner"</span>,
+      <span class="ck">"assets"</span>: [],
+      <span class="ck">"start"</span>: <span class="cn">20260301</span>,
+      <span class="ck">"end"</span>: <span class="cn">20260331</span>,
+      <span class="ck">"net"</span>: <span class="cn">1250.00</span>,
+      <span class="ck">"pdf"</span>: <span class="cs">"https://example.cdn.com/owner-statement-2026-03.pdf"</span>
+    },
+    {
+      <span class="ck">"unique_id"</span>: <span class="cs">"1762874556055x306565730354150700"</span>,
+      <span class="ck">"type"</span>: <span class="cs">"By asset"</span>,
+      <span class="ck">"assets"</span>: [
+        {
+          <span class="ck">"id"</span>: <span class="cs">"1727271442999x670760258751734300"</span>,
+          <span class="ck">"name"</span>: <span class="cs">"Villa Capri 1"</span>
+        }
+      ],
+      <span class="ck">"start"</span>: <span class="cn">20260301</span>,
+      <span class="ck">"end"</span>: <span class="cn">20260315</span>,
+      <span class="ck">"net"</span>: <span class="cn">100</span>,
+      <span class="ck">"pdf"</span>: <span class="cs">"https://example.cdn.com/owner-statement-2026-03-mid.pdf"</span>
+    }
+    <span class="cc">// ...more owner statements within the date range</span>
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Owner statement object (owner-statements) -->
+    <section class="doc-section" id="get-owner-statements-statement">
+      <div class="section-eyebrow">Response → owner_statements[]</div>
+      <h2 class="heading-with-dot"><span class="ndot ndot-gray"></span> Owner Statement</h2>
+      <p>Each item in the <code class="inline-code">owner_statements</code> array represents a generated owner statement with an available PDF.</p>
+
+      <div class="field-card">
+        <table>
+          <thead>
+            <tr><th class="col-field-180">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="f-name">unique_id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique owner statement ID.</td></tr>
+            <tr><td><span class="f-name">type</span></td><td><span class="f-type">string</span></td><td class="f-desc">Statement grouping type (for example, <code>By owner</code> or <code>By asset</code>).</td></tr>
+            <tr><td><span class="f-name">assets</span></td><td><span class="f-type">array</span></td><td class="f-desc">List of assets included in the statement. Empty when the statement type is not asset-specific.</td></tr>
+            <tr><td><span class="f-name">start</span></td><td><span class="f-type">number</span></td><td class="f-desc">Statement start date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">end</span></td><td><span class="f-type">number</span></td><td class="f-desc">Statement end date in <code>YYYYMMDD</code> format.</td></tr>
+            <tr><td><span class="f-name">net</span></td><td><span class="f-type">number</span></td><td class="f-desc">Net statement amount.</td></tr>
+            <tr><td><span class="f-name">pdf</span></td><td><span class="f-type">string</span></td><td class="f-desc">Direct URL to the statement PDF.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="nested-section">
+          <div class="nested-label">Owner statement asset object — assets[]</div>
+          <div class="nested-table">
+            <table>
+              <thead>
+                <tr><th class="col-field-160">Field</th><th class="col-type-90">Type</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="f-name">id</span></td><td><span class="f-type">string</span></td><td class="f-desc">Unique asset ID included in the statement.</td></tr>
+                <tr><td><span class="f-name">name</span></td><td><span class="f-type">string</span></td><td class="f-desc">Display name of the asset included in the statement.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <p class="doc-footer">
-      Clearing API · v1.1 · Owner Data, Owners, Get Assets, Get Transactions, Get Bookings, Get Resolution Payout &amp; Get Categories endpoints
+      Clearing API · v1.1 · Owner Data, Owner Statements, Owners, Get Assets, Get Transactions, Get Bookings, Get Resolution Payout &amp; Get Categories endpoints
     </p>
 
   </main>
